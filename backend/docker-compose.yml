@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  commentguard-api:
+    build: .
+    container_name: commentguard
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/ml:/app/app/ml    # mount model files without rebuilding
+    env_file:
+      - .env
+    restart: unless-stopped
+
