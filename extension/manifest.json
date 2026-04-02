@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "CommentGuard",
+  "version": "2.0",
+  "description": "Real-time toxic comment filter powered by your self-hosted CommentGuard API.",
+
+  "permissions": ["storage", "activeTab"],
+
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://www.reddit.com/*",
+    "https://news.ycombinator.com/*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8000/*",
+    "https://*/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.reddit.com/*",
+        "https://news.ycombinator.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CommentGuard Settings"
+  },
+
+  "icons": {
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  }
+}
