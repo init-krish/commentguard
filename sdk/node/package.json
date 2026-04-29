@@ -1,5 +1,5 @@
 {
-  "name": "@commentguard/sdk",
+  "name": "commentguard-sdk",
   "version": "1.0.0",
   "description": "Node.js SDK for CommentGuard - The open-source Perspective API alternative",
   "main": "./dist/index.js",

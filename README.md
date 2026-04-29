@@ -119,7 +119,7 @@ Navigate to `http://localhost:3000` to see your AI in action.
 Integrating CommentGuard into your application is incredibly simple. We offer an official Node.js SDK:
 
 ```bash
-npm install @commentguard/sdk
+npm install commentguard-sdk
 ```
 
 For full copy-paste examples in **Node.js, Vanilla JS, Python, and PHP**, see our [Integration Guide](docs/INTEGRATIONS.md).

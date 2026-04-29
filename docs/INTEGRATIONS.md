@@ -7,11 +7,11 @@ Integrating CommentGuard into your stack is ridiculously easy. You don't need an
 We built an official NPM package for Node environments (Next.js, Express, Nuxt, etc).
 
 ```bash
-npm install @commentguard/sdk
+npm install commentguard-sdk
 ```
 
 ```javascript
-import { CommentGuard } from '@commentguard/sdk';
+import { CommentGuard } from 'commentguard-sdk';
 
 const guard = new CommentGuard({ endpoint: 'http://localhost:8000' });
 
