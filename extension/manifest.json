@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "CommentGuard",
-  "version": "2.0",
-  "description": "Real-time toxic comment filter powered by your self-hosted CommentGuard API.",
+  "version": "3.0",
+  "description": "Real-time toxic comment filter with multi-label detection. Blurs toxic, threatening, hateful, and obscene comments across YouTube, Reddit, Twitter/X, and more.",
 
   "permissions": ["storage", "activeTab"],
 
@@ -10,6 +10,12 @@
     "https://www.youtube.com/*",
     "https://www.reddit.com/*",
     "https://news.ycombinator.com/*",
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://discord.com/*",
+    "https://www.twitch.tv/*",
+    "https://www.facebook.com/*",
+    "https://www.instagram.com/*",
     "http://localhost:8000/*",
     "http://127.0.0.1:8000/*",
     "https://*/*"
@@ -20,7 +26,13 @@
       "matches": [
         "https://www.youtube.com/*",
         "https://www.reddit.com/*",
-        "https://news.ycombinator.com/*"
+        "https://news.ycombinator.com/*",
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://discord.com/*",
+        "https://www.twitch.tv/*",
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
@@ -29,7 +41,7 @@
 
   "action": {
     "default_popup": "popup.html",
-    "default_title": "CommentGuard Settings"
+    "default_title": "CommentGuard — Toxic Comment Filter"
   },
 
   "icons": {

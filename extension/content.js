@@ -1,12 +1,34 @@
 /**
- * CommentGuard — Multi-Site Content Script v2.0
- * Supports: YouTube, Reddit, Hacker News
+ * CommentGuard — Multi-Site Content Script v3.0
+ * Supports: YouTube, Reddit, Hacker News, Twitter/X, Discord (web)
+ *
+ * Features:
+ *  - Multi-label category badges (insult, threat, hate, etc.)
+ *  - Click-to-reveal with false-positive feedback
+ *  - MutationObserver for SPA dynamic content
+ *  - Session stats tracking
  */
 
 const SITE_SELECTORS = {
-  "youtube.com": "ytd-comment-thread-renderer #content-text",
-  "reddit.com": "[data-testid='comment'] p",
-  "news.ycombinator.com": ".comment .commtext"
+  "youtube.com":             "ytd-comment-thread-renderer #content-text",
+  "reddit.com":              "[data-testid='comment'] p, .md p",
+  "news.ycombinator.com":    ".comment .commtext",
+  "x.com":                   "[data-testid='tweetText']",
+  "twitter.com":             "[data-testid='tweetText']",
+  "discord.com":             "[class*='messageContent']",
+  "twitch.tv":               ".chat-line__message",
+  "facebook.com":            "[data-ad-preview='message'] span",
+  "instagram.com":           "ul li span",
+};
+
+// Category colors and emoji for badges
+const CATEGORY_STYLES = {
+  toxic:         { emoji: "☠️",  color: "#dc2626", label: "Toxic" },
+  severe_toxic:  { emoji: "💀",  color: "#991b1b", label: "Severe" },
+  obscene:       { emoji: "🤬",  color: "#c2410c", label: "Obscene" },
+  threat:        { emoji: "⚠️",  color: "#b91c1c", label: "Threat" },
+  insult:        { emoji: "🗣️", color: "#d97706", label: "Insult" },
+  identity_hate: { emoji: "🚫",  color: "#7c3aed", label: "Hate" },
 };
 
 const hostname = window.location.hostname;
@@ -26,7 +48,8 @@ let SESSION_STATS = {
   blurred: 0,
   blocked: 0,
   topProb: 0,
-  topText: ""
+  topText: "",
+  categories: {}
 };
 
 chrome.storage.sync.get(
@@ -36,7 +59,7 @@ chrome.storage.sync.get(
     THRESHOLD = s.threshold;
     ENABLED = s.enabled;
 
-    console.log(`[CommentGuard] Loaded | API=${API_URL} | threshold=${THRESHOLD}% | enabled=${ENABLED}`);
+    console.log(`[CommentGuard v3] Loaded | API=${API_URL} | threshold=${THRESHOLD}% | enabled=${ENABLED}`);
 
     if (ENABLED && COMMENT_SELECTOR) {
       processVisible();
@@ -52,11 +75,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === "clearStats") {
     SESSION_STATS = {
-      scanned: 0,
-      blurred: 0,
-      blocked: 0,
-      topProb: 0,
-      topText: ""
+      scanned: 0, blurred: 0, blocked: 0,
+      topProb: 0, topText: "", categories: {}
     };
     sendResponse({ ok: true });
   }
@@ -100,6 +120,13 @@ async function classifyComment(el) {
       SESSION_STATS.topText = text.slice(0, 80);
     }
 
+    // Track per-category stats
+    if (data.categories) {
+      for (const cat of data.categories) {
+        SESSION_STATS.categories[cat] = (SESSION_STATS.categories[cat] || 0) + 1;
+      }
+    }
+
     if (data.decision === "block") {
       SESSION_STATS.blocked++;
       applyBlockStyle(el, data);
@@ -125,17 +152,38 @@ function applyBlockStyle(el, data) {
     border-radius: 6px;
     transition: filter 0.3s ease;
     cursor: pointer;
+    position: relative;
   `;
 
   const pct = (data.toxic_prob * 100).toFixed(0);
-  const badge = makeBadge(`⛔ Toxic ${pct}%`, "#cc0000");
-  el.appendChild(badge);
+  const cats = data.categories || ["toxic"];
+
+  // Create category badge row
+  const badgeRow = document.createElement("div");
+  badgeRow.style.cssText = `
+    display: flex; gap: 4px; flex-wrap: wrap;
+    margin-top: 4px; filter: none !important;
+  `;
+
+  // Main severity badge
+  const mainBadge = makeBadge(`⛔ ${pct}%`, "#cc0000");
+  badgeRow.appendChild(mainBadge);
+
+  // Per-category badges
+  for (const cat of cats) {
+    const style = CATEGORY_STYLES[cat];
+    if (style) {
+      badgeRow.appendChild(makeBadge(`${style.emoji} ${style.label}`, style.color));
+    }
+  }
+
+  el.appendChild(badgeRow);
 
   el.addEventListener("click", () => {
     el.style.filter = "none";
     el.style.background = "transparent";
-    badge.textContent = "✅ Revealed";
-    badge.style.background = "#555";
+    badgeRow.innerHTML = "";
+    badgeRow.appendChild(makeBadge("✅ Revealed", "#555"));
     sendFeedback(textFromElement(el), "non_toxic", "toxic");
   }, { once: true });
 }
@@ -149,17 +197,36 @@ function applyReviewStyle(el, data) {
     border-radius: 4px;
     transition: filter 0.3s ease;
     cursor: pointer;
+    position: relative;
   `;
 
   const pct = (data.toxic_prob * 100).toFixed(0);
-  const badge = makeBadge(`⚠ Review ${pct}%`, "#b45309");
-  el.appendChild(badge);
+  const cats = data.categories || [];
+
+  const badgeRow = document.createElement("div");
+  badgeRow.style.cssText = `
+    display: flex; gap: 4px; flex-wrap: wrap;
+    margin-top: 4px; filter: none !important;
+  `;
+
+  const mainBadge = makeBadge(`⚠ Review ${pct}%`, "#b45309");
+  badgeRow.appendChild(mainBadge);
+
+  for (const cat of cats) {
+    const style = CATEGORY_STYLES[cat];
+    if (style) {
+      badgeRow.appendChild(makeBadge(`${style.emoji} ${style.label}`, style.color));
+    }
+  }
+
+  el.appendChild(badgeRow);
 
   el.addEventListener("click", () => {
     el.style.filter = "none";
     el.style.background = "transparent";
-    badge.textContent = "✅ Revealed";
-    badge.style.background = "#555";
+    el.style.borderLeft = "none";
+    badgeRow.innerHTML = "";
+    badgeRow.appendChild(makeBadge("✅ Revealed", "#555"));
     sendFeedback(textFromElement(el), "non_toxic", "borderline");
   }, { once: true });
 }
@@ -175,16 +242,19 @@ function makeBadge(text, bg) {
     font-weight: bold;
     padding: 2px 7px;
     border-radius: 12px;
-    margin-left: 8px;
     vertical-align: middle;
     font-family: -apple-system, sans-serif;
     letter-spacing: 0.3px;
+    white-space: nowrap;
   `;
   return b;
 }
 
 function textFromElement(el) {
-  return el.innerText?.replace(/⛔ Toxic \\d+%|⚠ Review \\d+%|✅ Revealed/g, "").trim() || "";
+  // Strip badge text from the content
+  const clone = el.cloneNode(true);
+  clone.querySelectorAll("div, span").forEach(n => n.remove());
+  return clone.innerText?.trim() || "";
 }
 
 async function sendFeedback(text, correctLabel, predictedLabel) {
