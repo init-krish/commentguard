@@ -25,6 +25,7 @@ def _mock_predict_multi(text: str) -> Dict[str, float]:
 
     toxic_phrases = {
         "i hate you": {"toxic": 0.92, "severe_toxic": 0.3, "obscene": 0.5, "threat": 0.1, "insult": 0.88, "identity_hate": 0.05},
+        "hate you": {"toxic": 0.85, "severe_toxic": 0.2, "obscene": 0.3, "threat": 0.1, "insult": 0.8, "identity_hate": 0.05},
         "you are stupid": {"toxic": 0.85, "severe_toxic": 0.1, "obscene": 0.3, "threat": 0.05, "insult": 0.92, "identity_hate": 0.02},
         "kill yourself": {"toxic": 0.97, "severe_toxic": 0.91, "obscene": 0.4, "threat": 0.95, "insult": 0.6, "identity_hate": 0.1},
         "die": {"toxic": 0.88, "severe_toxic": 0.5, "obscene": 0.2, "threat": 0.85, "insult": 0.3, "identity_hate": 0.05},

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="extension/icons/icon128.svg" width="80" alt="CommentGuard logo" />
+  <img src="docs/logo.png" width="120" alt="CommentGuard logo" />
 </p>
 
 <h1 align="center">🛡️ CommentGuard</h1>
@@ -20,6 +20,17 @@
 
 ---
 
+## 📑 Table of Contents
+- [Features](#-features)
+- [Quick Start](#-quick-start)
+- [Developer SDK & Integrations](#-developer-sdk--integrations)
+- [Live Dashboard](#-live-dashboard)
+- [Chrome Extension](#-chrome-extension)
+- [Perspective API Migration](#-perspective-api-migration)
+- [API Reference](#-api-reference)
+
+---
+
 ## ✨ Features
 
 - 🏷️ **Multi-label classification** — 6 toxicity categories: `toxic`, `severe_toxic`, `obscene`, `threat`, `insult`, `identity_hate`
@@ -28,6 +39,7 @@
 - 🔄 **Perspective API compatible** — drop-in replacement endpoint (`POST /v1/comments:analyze`)
 - 📦 **Batch API** — moderate up to 100 texts in a single request
 - 🧠 **Swappable models** — TF-IDF + Logistic Regression *or* `unitary/toxic-bert` via `MODEL_TYPE` env var
+- 📈 **Live Dashboard** — beautiful React/Vite analytics dashboard to visualize the moderation stream
 - 🧩 **Chrome extension** — live-filters 9 sites: YouTube, Reddit, HN, Twitter/X, Discord, Twitch, Facebook, Instagram
 - 📊 **Live analytics** — `/stats` endpoint with per-category toxicity breakdown
 - 🔁 **Feedback loop** — users can report false positives; data is logged for retraining
@@ -39,53 +51,40 @@
 
 ## 🏗️ Architecture
 
-```
-┌────────────────────┐     ┌─────────────────────────────────────────┐
-│  Chrome Extension  │────▶│           FastAPI Backend               │
-│  (content.js)      │◀────│                                         │
-│                    │     │  POST /moderate ──▶ classify(text)      │
-│  • YouTube         │     │  POST /predict  ──▶ alias              │
-│  • Reddit          │     │  GET  /health   ──▶ status             │
-│  • Hacker News     │     │  GET  /stats    ──▶ analytics          │
-│                    │     │  POST /feedback ──▶ false-pos log      │
-└────────────────────┘     │                                         │
-                           │  ┌───────────────────────────────────┐  │
-┌────────────────────┐     │  │ ML Engine (swappable)             │  │
-│  Your Website      │────▶│  │  • classical: TF-IDF + LogReg    │  │
-│  (any language)    │◀────│  │  • transformer: toxic-bert        │  │
-└────────────────────┘     │  └───────────────────────────────────┘  │
-                           └─────────────────────────────────────────┘
+```mermaid
+graph TD
+    A[Browser Extension] -->|POST /moderate| B(FastAPI Backend)
+    C[Node.js SDK Apps] -->|POST /moderate| B
+    D[Legacy Perspective Apps] -->|POST /v1/comments:analyze| B
+    
+    B --> E{Anti-Evasion Preprocessor}
+    E --> F[Transformer Neural Net]
+    
+    F -->|6-Category Scores| B
+    B -->|Logs & Stats| G[(In-Memory Analytics)]
+    
+    H[React Dashboard] -->|GET /stats| G
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### Option A — Local (Development)
+### Option A — 1-Click Local Start (Easiest)
+We wrote a startup script that automatically boots up both the AI Backend and the React Dashboard for you.
 
 ```bash
-# 1. Clone & enter
+# Clone the repository
 git clone https://github.com/init-krish/commentguard
-cd commentguard/backend
+cd commentguard
 
-# 2. Create virtual environment
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+# On Mac/Linux:
+./start.sh
 
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Configure
-cp .env.example .env
-# Edit .env → set MODEL_TYPE=transformer (uses toxic-bert, no .joblib needed)
-#           or MODEL_TYPE=classical (requires trained .joblib files — see below)
-
-# 5. Start server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 6. Test
-curl -X POST http://localhost:8000/moderate \
-  -H "Content-Type: application/json" \
+# On Windows:
+start.bat
+```
+Both the API (`localhost:8000`) and the Dashboard (`localhost:3000`) will instantly go live.
   -d '{"text": "I hate you so much"}'
 ```
 
@@ -96,26 +95,59 @@ cd commentguard/backend
 cp .env.example .env
 docker compose up -d
 
+```bash
 curl http://localhost:8000/health
 ```
 
 ---
 
-## 🧠 Model Training (Classical)
+## 📈 Live Dashboard
 
-If using `MODEL_TYPE=classical`, you need to train the TF-IDF model first:
+CommentGuard comes with a beautiful, real-time React dashboard to monitor toxicity rates and view live moderation logs.
 
 ```bash
-# On Kaggle (recommended) or Colab:
-# 1. Open a notebook on the Jigsaw Toxic Comment dataset
-# 2. Paste model/train.py and run
-# 3. Download vectorizer.joblib + models.joblib + model_meta.json
-# 4. Place them in backend/app/ml/
+cd dashboard
+npm install
+npm run dev
+```
+Navigate to `http://localhost:3000` to see your AI in action.
+
+---
+
+## 🔌 Developer SDK & Integrations
+
+Integrating CommentGuard into your application is incredibly simple. We offer an official Node.js SDK:
+
+```bash
+npm install @commentguard/sdk
 ```
 
-**Dataset:** [Jigsaw Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) (~160k Wikipedia comments)
+For full copy-paste examples in **Node.js, Vanilla JS, Python, and PHP**, see our [Integration Guide](docs/INTEGRATIONS.md).
 
-### Evaluation Metrics (Classical — TF-IDF + Logistic Regression)
+---
+
+## 🔄 Perspective API Migration
+
+Google's Perspective API is shutting down on Dec 31, 2026. CommentGuard acts as a 1:1 drop-in replacement.
+See our [Perspective Migration Guide](docs/PERSPECTIVE_MIGRATION.md) for instructions on how to switch by changing just one line of code.
+
+---
+
+## 🧠 Model Training (Classical)
+
+CommentGuard runs with the Deep Learning Transformer by default. If you want to use the ultra-fast classical model (`TF-IDF + Logistic Regression`), you need to train it first.
+
+### Step-by-Step Training Guide
+1. **Download Dataset:** Get the [Jigsaw Toxic Comment Dataset](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) from Kaggle.
+2. **Train:** Run `python model/train.py` on your local machine or in a Kaggle Notebook.
+3. **Move Files:** The script will output three files. You **must** move them into the backend directory:
+   - Move `vectorizer.joblib` ➡️ `backend/app/ml/vectorizer.joblib`
+   - Move `models.joblib` ➡️ `backend/app/ml/models.joblib`
+   - Move `model_meta.json` ➡️ `backend/app/ml/model_meta.json`
+4. **Configure:** Open your `backend/.env` file and set `MODEL_TYPE=classical`.
+5. **Restart:** Restart the backend or Docker container.
+
+### Evaluation Metrics (Classical)
 
 | Metric | Score |
 |--------|-------|

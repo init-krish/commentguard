@@ -5,15 +5,16 @@
 
 ## Overview
 
-| | Perspective API | CommentGuard |
+| Feature | Perspective API | CommentGuard |
 |---|---|---|
-| **Status** | ❌ Sunsetting Dec 2026  | ✅ Active, open-source |
-| **Hosting** | Cloud only (Google) | Self-hosted (your infra) |
-| **Privacy** | Data sent to Google | Data never leaves your servers |
-| **Cost** | Free (was) | Free (forever) |
-| **Categories** | 7 attributes | 6 categories |
-| **Rate limits** | 1 QPS default | Unlimited (your hardware) |
-| **API Key** | Required | Optional |
+| **Lifecycle** | Deprecated (Sunsets Dec 2026) | Active, Open-Source |
+| **Infrastructure** | Managed Cloud (Google) | Self-Hosted (Requires user infrastructure) |
+| **Data Privacy** | Payloads sent to Google servers | 100% Local (Data remains on-premise) |
+| **Operating Cost** | Free API | Free software (Server hosting costs apply) |
+| **Performance Scaling**| Auto-scales via Google Cloud | Dependent on user's server capacity |
+| **Rate Limits** | 1 QPS default (requires quota request) | Configurable by user (Hardware-bound) |
+| **Language Support** | Multi-lingual | Primarily English (Depends on model weights) |
+| **Categories** | 7 core attributes | 6 core attributes |
 
 ## Step 1: Deploy CommentGuard
 

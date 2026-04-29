@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # ── Config from environment ───────────────────────────────────────────────────
 THRESHOLD   = float(os.getenv("THRESHOLD", "0.5"))
-MODEL_TYPE  = os.getenv("MODEL_TYPE", "classical")  # "classical" or "transformer"
+MODEL_TYPE  = os.getenv("MODEL_TYPE", "transformer")  # Default to transformer for max accuracy
 ENV         = os.getenv("ENV", "development")
 
 # All toxicity categories (matches Jigsaw dataset labels)
@@ -75,24 +75,17 @@ if MODEL_TYPE == "transformer":
 
     def _predict_multi(text: str) -> Dict[str, float]:
         """Returns per-category probabilities using transformer model."""
+        # unitary/toxic-bert outputs 6 labels: toxic, severe_toxic, obscene, threat, insult, identity_hate
         results = _clf(text[:512])[0]
-        probs = {}
+        probs = {cat: 0.0 for cat in CATEGORIES}
+        
+        # Hugging Face pipeline with top_k=None returns an array of {label, score}
         for r in results:
             label = r["label"].lower()
-            if label in ("toxic", "label_1", "1"):
-                probs["toxic"] = r["score"]
-            else:
-                probs["toxic"] = 1.0 - r["score"]
-        # toxic-bert is single-label; approximate other categories from toxic score
-        toxic_p = probs.get("toxic", 0.0)
-        return {
-            "toxic":         toxic_p,
-            "severe_toxic":  toxic_p * 0.4,   # conservative estimate
-            "obscene":       toxic_p * 0.7,
-            "threat":        toxic_p * 0.2,
-            "insult":        toxic_p * 0.8,
-            "identity_hate": toxic_p * 0.3,
-        }
+            if label in probs:
+                probs[label] = r["score"]
+                
+        return probs
 
     logger.info("✅ Transformer model loaded (unitary/toxic-bert)")
 

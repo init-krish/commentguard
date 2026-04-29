@@ -1,0 +1,38 @@
+{
+  "name": "@commentguard/sdk",
+  "version": "1.0.0",
+  "description": "Node.js SDK for CommentGuard - The open-source Perspective API alternative",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/init-krish/commentguard.git"
+  },
+  "keywords": [
+    "moderation",
+    "toxicity",
+    "perspective-api",
+    "commentguard",
+    "ai"
+  ],
+  "author": "init-krish",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

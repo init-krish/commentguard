@@ -1,161 +1,105 @@
-# CommentGuard — Developer Integration Guide
+# 🔌 Integration Examples
 
-Copy-paste examples for adding CommentGuard moderation to your website backend.
+Integrating CommentGuard into your stack is ridiculously easy. You don't need any complex SDKs if you don't want them — just a simple HTTP POST request.
 
-## API Contract
+## Option 1: Node.js (Easiest)
 
-```
-POST /moderate
-Content-Type: application/json
+We built an official NPM package for Node environments (Next.js, Express, Nuxt, etc).
 
-{
-  "text":      "comment text here",
-  "threshold": 0.5,          // optional: override default threshold per request
-  "site":      "my_forum"    // optional: tag for analytics
-}
+```bash
+npm install @commentguard/sdk
 ```
 
-Response:
-```json
-{
-  "label":      "toxic",
-  "toxic_prob": 0.93,
-  "decision":   "block",
-  "categories": ["toxic"]
-}
-```
+```javascript
+import { CommentGuard } from '@commentguard/sdk';
 
-Decisions: `allow` → save the comment | `review` → queue for human review | `block` → reject
+const guard = new CommentGuard({ endpoint: 'http://localhost:8000' });
 
----
+// Example: Express.js Chat Route
+app.post('/api/chat/send', async (req, res) => {
+  const { message, userId } = req.body;
 
-## Node.js / Express
-
-```js
-const express = require("express");
-const app     = express();
-app.use(express.json());
-
-async function moderate(text) {
-  const res  = await fetch("http://127.0.0.1:8000/moderate", {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ text })
-  });
-  return res.json();  // { label, toxic_prob, decision, categories }
-}
-
-app.post("/comments", async (req, res) => {
-  const { userId, text } = req.body;
-  const result = await moderate(text);
-
-  if (result.decision === "allow") {
-    // db.saveComment(userId, text, "published");
-    return res.json({ status: "published" });
-  } else if (result.decision === "review") {
-    // db.saveComment(userId, text, "pending_review");
-    return res.json({ status: "pending_review", message: "Your comment is under review." });
-  } else {
-    // db.saveComment(userId, text, "blocked");  // optional: keep for audit log
-    return res.status(400).json({ status: "blocked", message: "Comment contains inappropriate content." });
+  // 1. Check the message BEFORE saving it to the database
+  const result = await guard.moderate(message);
+  
+  if (result.decision === 'block') {
+    // 2. Reject the message entirely!
+    return res.status(403).json({ 
+      error: "Message blocked.",
+      reason: result.categories.join(', ') // e.g. "toxic, threat"
+    });
   }
+
+  // 3. If safe, save to database and broadcast to users
+  await database.saveMessage(userId, message);
+  return res.status(200).json({ success: true });
 });
 ```
 
 ---
 
-## Python / Django
+## Option 2: Frontend (Vanilla JavaScript / React)
+
+You can call the API directly from the browser (CORS is enabled by default).
+
+```javascript
+async function moderateComment(text) {
+  const res = await fetch("http://localhost:8000/moderate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+  
+  const data = await res.json();
+  
+  if (data.decision === 'block') {
+    alert("Please be nice!");
+  }
+}
+```
+
+---
+
+## Option 3: Python (Django / FastAPI / Flask)
 
 ```python
-import requests
+import httpx
 
-COMMENTGUARD_URL = "http://127.0.0.1:8000/moderate"
-
-def submit_comment(request):
-    text    = request.POST.get("text", "")
-    user_id = request.user.id
-
-    resp   = requests.post(COMMENTGUARD_URL, json={"text": text}, timeout=5)
-    result = resp.json()  # { label, toxic_prob, decision }
-
-    if result["decision"] == "allow":
-        Comment.objects.create(user_id=user_id, text=text, status="published")
-        return JsonResponse({"status": "published"})
-    elif result["decision"] == "review":
-        Comment.objects.create(user_id=user_id, text=text, status="pending_review")
-        return JsonResponse({"status": "pending_review"})
-    else:
-        return JsonResponse({"status": "blocked", "error": "Inappropriate content"}, status=400)
+def is_toxic(text: str) -> bool:
+    response = httpx.post(
+        "http://localhost:8000/moderate",
+        json={"text": text}
+    )
+    return response.json()["decision"] == "block"
 ```
 
 ---
 
-## PHP / Laravel
+## Option 4: PHP (Laravel / WordPress)
 
 ```php
-use Illuminate\Support\Facades\Http;
+$url = "http://localhost:8000/moderate";
+$data = json_encode(["text" => "Hello world"]);
 
-public function store(Request $request) {
-    $text   = $request->input('text');
-    $result = Http::post('http://127.0.0.1:8000/moderate', ['text' => $text])->json();
+$options = [
+    'http' => [
+        'method'  => 'POST',
+        'header'  => "Content-Type: application/json\r\n",
+        'content' => $data
+    ]
+];
 
-    if ($result['decision'] === 'allow') {
-        Comment::create(['user_id' => auth()->id(), 'text' => $text, 'status' => 'published']);
-        return response()->json(['status' => 'published']);
-    } elseif ($result['decision'] === 'review') {
-        Comment::create(['user_id' => auth()->id(), 'text' => $text, 'status' => 'pending_review']);
-        return response()->json(['status' => 'pending_review']);
-    } else {
-        return response()->json(['status' => 'blocked'], 400);
-    }
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+$response = json_decode($result);
+
+if ($response->decision === "block") {
+    echo "Comment blocked.";
 }
 ```
 
 ---
 
-## Next.js (API route)
+## Perspective API Drop-in
 
-```js
-// pages/api/comments.js
-export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
-
-  const { text } = req.body;
-
-  const guard = await fetch("http://127.0.0.1:8000/moderate", {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ text })
-  }).then(r => r.json());
-
-  if (guard.decision === "block") {
-    return res.status(400).json({ error: "Comment blocked", toxic_prob: guard.toxic_prob });
-  }
-
-  // save to DB here…
-  return res.json({ status: guard.decision });
-}
-```
-
----
-
-## Self-Host with Docker
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/init-krish/commentguard
-cd commentguard/backend
-
-# 2. Copy your trained model files
-cp path/to/vectorizer.joblib app/ml/
-cp path/to/model.joblib       app/ml/
-
-# 3. Start
-docker compose up -d
-
-# 4. Test
-curl -X POST http://localhost:8000/moderate \
-  -H "Content-Type: application/json" \
-  -d '{"text": "I hate you"}'
-```
-
+If you currently use `https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze`, simply point your URL to `http://localhost:8000/v1/comments:analyze`. No code changes required! See the [Perspective Migration Guide](PERSPECTIVE_MIGRATION.md) for details.
