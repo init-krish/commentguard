@@ -143,7 +143,7 @@ export default async function handler(req, res) {
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/commentguard
+git clone https://github.com/init-krish/commentguard
 cd commentguard/backend
 
 # 2. Copy your trained model files

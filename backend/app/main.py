@@ -29,7 +29,7 @@ app = FastAPI(
     title="CommentGuard",
     description="Open-source toxic comment moderation API. POST /moderate with {text} to classify.",
     version="2.0.0",
-    contact={"name": "CommentGuard OSS", "url": "https://github.com/YOUR_USERNAME/commentguard"},
+    contact={"name": "CommentGuard OSS", "url": "https://github.com/init-krish/commentguard"},
 )
 
 # CORS — required for browser extensions and third-party websites

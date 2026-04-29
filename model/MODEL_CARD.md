@@ -64,6 +64,6 @@ The transformer model (`unitary/toxic-bert`) is pre-trained and fine-tuned on th
   title   = {CommentGuard: Open-Source Toxic Comment Moderation},
   author  = {Krishnan Madhuratnam},
   year    = {2025},
-  url     = {https://github.com/YOUR_USERNAME/commentguard}
+  url     = {https://github.com/init-krish/commentguard}
 }
 ```
