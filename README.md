@@ -70,6 +70,11 @@ graph TD
 
 ## 🚀 Quick Start
 
+### Prerequisites
+Before running the project, make sure you have the following installed on your machine:
+- **Python 3.10+** (For the AI Backend)
+- **Node.js & npm** (For the React Dashboard and SDK)
+
 ### Option A — 1-Click Local Start (Easiest)
 We wrote a startup script that automatically boots up both the AI Backend and the React Dashboard for you.
 
