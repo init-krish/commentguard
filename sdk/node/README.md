@@ -1,21 +1,21 @@
-# @commentguard/sdk
+# commentguard-sdk
 
 The official Node.js / TypeScript SDK for **CommentGuard** — an open-source, self-hostable toxic comment moderation API. A drop-in replacement for Google's Perspective API.
 
 ## Installation
 
 ```bash
-npm install @commentguard/sdk
+npm install commentguard-sdk
 # or
-yarn add @commentguard/sdk
+yarn add commentguard-sdk
 # or
-pnpm add @commentguard/sdk
+pnpm add commentguard-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { CommentGuard } from '@commentguard/sdk';
+import { CommentGuard } from 'commentguard-sdk';
 
 // Initialize with your self-hosted CommentGuard URL
 // Defaults to http://localhost:8000 if not provided
@@ -98,7 +98,7 @@ import type {
   BatchResponse, 
   CategoryScores,
   CommentGuardConfig
-} from '@commentguard/sdk';
+} from 'commentguard-sdk';
 ```
 
 ## License
