@@ -20,6 +20,10 @@
 
 ---
 
+Google is sunsetting the Perspective API, leaving developers without a reliable, privacy-focused way to moderate text. **CommentGuard** is a fast, 1:1 drop-in replacement built from the ground up. It uses a custom anti-evasion engine and a Deep Learning Transformer model to locally detect 6 categories of toxicity. 100% open-source, and your data never leaves your servers.
+
+---
+
 ## 📑 Table of Contents
 - [Features](#-features)
 - [Quick Start](#-quick-start)
