@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1,
+    "text": "I will kill you and your entire family.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "threat"],
+    "category": "Direct Threat"
+  },
+  {
+    "id": 2,
+    "text": "This is a wonderful video, thanks for sharing!",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 3,
+    "text": "You are the most disgusting piece of trash I have ever seen.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "insult"],
+    "category": "Insult"
+  },
+  {
+    "id": 4,
+    "text": "Great explanation! I learned a lot from this tutorial.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 5,
+    "text": "I h4t3 y0u s0 much, d13 alr34dy",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "threat"],
+    "category": "Leetspeak Evasion"
+  },
+  {
+    "id": 6,
+    "text": "f**k you and everything you stand for",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "obscene", "insult"],
+    "category": "Obscene"
+  },
+  {
+    "id": 7,
+    "text": "The weather today is really nice, perfect for a walk.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 8,
+    "text": "All people of that religion should be removed from this country.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "identity_hate"],
+    "category": "Identity Hate"
+  },
+  {
+    "id": 9,
+    "text": "I respectfully disagree with your opinion on this matter.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 10,
+    "text": "shut the f**k up you worthless idiot nobody cares about you",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "obscene", "insult"],
+    "category": "Obscene + Insult"
+  },
+  {
+    "id": 11,
+    "text": "y0u r g4rb4g3 and u sh0uld d13",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic"],
+    "category": "Leetspeak Evasion"
+  },
+  {
+    "id": 12,
+    "text": "I think this policy could be improved, here is my suggestion.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 13,
+    "text": "I hope your house burns down with you inside it.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "severe_toxic", "threat"],
+    "category": "Severe Threat"
+  },
+  {
+    "id": 14,
+    "text": "Thanks for the code review, I'll fix those bugs today.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 15,
+    "text": "You are so stupid, how did you even get into this school?",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "insult"],
+    "category": "Insult"
+  },
+  {
+    "id": 16,
+    "text": "People like you don't deserve to live in this world.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "severe_toxic", "threat"],
+    "category": "Severe Threat"
+  },
+  {
+    "id": 17,
+    "text": "Can anyone recommend a good Python course for beginners?",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 18,
+    "text": "u r s0 dum u n33d t0 g0 d13 in a h0l3",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "threat"],
+    "category": "Heavy Leetspeak Evasion"
+  },
+  {
+    "id": 19,
+    "text": "This game is quite challenging but I enjoy playing it.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 20,
+    "text": "What a dumb argument, you clearly have no brain cells left.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "insult"],
+    "category": "Insult"
+  },
+  {
+    "id": 21,
+    "text": "Those immigrants are ruining our country, send them all back.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "identity_hate"],
+    "category": "Identity Hate"
+  },
+  {
+    "id": 22,
+    "text": "Happy birthday! Hope you have an amazing day!",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 23,
+    "text": "I swear I will find where you live and make you pay.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "threat"],
+    "category": "Direct Threat"
+  },
+  {
+    "id": 24,
+    "text": "This API documentation is really well written, nice work.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 25,
+    "text": "go kll yourself nobody would even notice",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "severe_toxic", "threat"],
+    "category": "Misspelling Evasion"
+  },
+  {
+    "id": 26,
+    "text": "The coach made some questionable decisions today honestly.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Mild Opinion"
+  },
+  {
+    "id": 27,
+    "text": "All gay people are mentally ill and disgusting.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "identity_hate", "insult"],
+    "category": "Identity Hate"
+  },
+  {
+    "id": 28,
+    "text": "I don't think this feature request makes sense, here's why.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Constructive Criticism"
+  },
+  {
+    "id": 29,
+    "text": "you absolute m0r0n go eat sh1t and d1e",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "obscene", "insult"],
+    "category": "Leetspeak + Obscene"
+  },
+  {
+    "id": 30,
+    "text": "Looking forward to collaborating with you on this project!",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean"
+  },
+  {
+    "id": 31,
+    "text": "Women belong in the kitchen and should never have opinions.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "identity_hate", "insult"],
+    "category": "Identity Hate + Sexism"
+  },
+  {
+    "id": 32,
+    "text": "That was a tough loss but the team played their hearts out.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean (Sports)"
+  },
+  {
+    "id": 33,
+    "text": "Someone needs to beat the crap out of this guy seriously.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "threat"],
+    "category": "Indirect Threat"
+  },
+  {
+    "id": 34,
+    "text": "Just deployed my first Docker container, feels amazing!",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean (Tech)"
+  },
+  {
+    "id": 35,
+    "text": "he shat the bed in that match but proved himself later",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Slang (Not Toxic)"
+  },
+  {
+    "id": 36,
+    "text": "Your code is absolute garbage, rewrite it from scratch you noob",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "insult"],
+    "category": "Insult (Tech)"
+  },
+  {
+    "id": 37,
+    "text": "lol this video was hilarious, made my day",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Clean (Casual)"
+  },
+  {
+    "id": 38,
+    "text": "Every single one of those people is a terrorist and should be deported.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "identity_hate"],
+    "category": "Identity Hate (Xenophobia)"
+  },
+  {
+    "id": 39,
+    "text": "I think the movie was okay, not great but not terrible either.",
+    "ground_truth": "non_toxic",
+    "expected_categories": [],
+    "category": "Neutral Opinion"
+  },
+  {
+    "id": 40,
+    "text": "I will track you down and destroy everything you love.",
+    "ground_truth": "toxic",
+    "expected_categories": ["toxic", "severe_toxic", "threat"],
+    "category": "Severe Threat"
+  }
+]

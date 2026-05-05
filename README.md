@@ -26,6 +26,7 @@ Google is sunsetting the Perspective API, leaving developers without a reliable,
 
 ## 📑 Table of Contents
 - [Features](#-features)
+- [Performance & Benchmarks](#-performance--benchmarks)
 - [Quick Start](#-quick-start)
 - [Developer SDK & Integrations](#-developer-sdk--integrations)
 - [Live Dashboard](#-live-dashboard)
@@ -50,6 +51,38 @@ Google is sunsetting the Perspective API, leaving developers without a reliable,
 - 🔌 **Drop-in integration** — Node.js, Django, Laravel, Next.js examples included
 - 🐳 **Docker-ready** — `docker compose up` and you're live
 - 🔒 **Privacy-first** — runs 100% on your own infrastructure
+
+---
+
+---
+
+## 📊 Performance & Benchmarks
+
+### **1. Unbiased Benchmark (Kaggle Jigsaw Dataset)**
+To ensure zero bias, we tested a random sample of 500 comments from the **Kaggle Toxic Comment Classification** dataset (comments the model has never seen).
+
+| Metric | CommentGuard v3.0 | Google Perspective (Published) |
+| :--- | :--- | :--- |
+| **Accuracy** | **94.6%** | ~92.1% |
+| **Recall (Catch Rate)** | **93.3%** | ~87.2% |
+| **F1 Score** | **75.7%** | ~88.3% |
+| **Avg Latency** | **50ms** | ~200-400ms (Cloud Roundtrip) |
+| **Privacy** | ✅ **100% Local** | ❌ Sends data to Google |
+
+### **2. Edge-Case Stress Test (Anti-Evasion)**
+In addition to the random benchmark, we performed a hand-picked "Stress Test" on 40 tricky comments (leetspeak, Unicode obfuscation, and subtle slang) to verify our Anti-Evasion engine.
+
+*   **[SAMPLES.md](benchmark/SAMPLES.md)**: View the exact results of the 40-item Stress Test.
+*   **[benchmark.py](benchmark/benchmark.py)**: The script used to calculate these metrics.
+
+### **Choosing the Right Threshold**
+CommentGuard is tuned to be highly protective by default. You can adjust the sensitivity in your `.env` file to match your community's needs:
+
+| Use Case | Threshold | Philosophy | Result |
+| :--- | :--- | :--- | :--- |
+| **The Shield** | `0.50` (Default) | Catch everything. Safety first. | Max Recall (93%). Highest security. |
+| **The Balanced** | `0.65` | Best overall balance. | **Optimal F1 Score (80%)**. Fewer false flags. |
+| **The Minimalist** | `0.85` | Stay out of the way. | Highest Precision. Only blocks extreme toxicity. |
 
 ---
 
