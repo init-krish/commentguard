@@ -2,6 +2,8 @@
 
 This file provides clarity on the **40 "Stress Test" comments** we used to verify the Anti-Evasion engine. These are not the random Kaggle samples—they are hand-picked tricky cases (leetspeak, slang, and separator evasion) designed to challenge the AI.
 
+Looking for the unbiased 500-comment results? Check **[KAGGLE_SAMPLES.md](KAGGLE_SAMPLES.md)**.
+
 ## 🛡️ Stress Test Samples (Top 15)
 
 | ID | Category | Text | Ground Truth | CommentGuard Result |

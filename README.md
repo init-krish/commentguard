@@ -72,7 +72,8 @@ To ensure zero bias, we tested a random sample of 500 comments from the **Kaggle
 ### **2. Edge-Case Stress Test (Anti-Evasion)**
 In addition to the random benchmark, we performed a hand-picked "Stress Test" on 40 tricky comments (leetspeak, Unicode obfuscation, and subtle slang) to verify our Anti-Evasion engine.
 
-*   **[SAMPLES.md](benchmark/SAMPLES.md)**: View the exact results of the 40-item Stress Test.
+*   **[SAMPLES.md](benchmark/SAMPLES.md)**: View the results of our hand-picked 40-item **Stress Test**.
+*   **[KAGGLE_SAMPLES.md](benchmark/KAGGLE_SAMPLES.md)**: View the first 50 comments from the **Unbiased 500-comment Benchmark**.
 *   **[benchmark.py](benchmark/benchmark.py)**: The script used to calculate these metrics.
 
 ### **Choosing the Right Threshold**
